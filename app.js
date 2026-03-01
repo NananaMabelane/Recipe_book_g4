@@ -1,4 +1,4 @@
-import { DATASET } from "./data/recipes.js";
+import { DATASET } from "./recipes.js";
 import * as Auth from "./auth.js";
 
 // ==================== AUTH ELEMENTS ====================
