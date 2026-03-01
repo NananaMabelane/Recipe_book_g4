@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Recipe Book • Pantry-to-Meal Finder</title>
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#0b0f17" />
+</head>
+
+<body>
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="orb orb-a"></div>
+        <div class="orb orb-b"></div>
+        <div class="orb orb-c"></div>
+    </div>
+
+    <!-- ==================== AUTHENTICATION SCREEN ==================== -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <div class="logo-icon">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <h1>Recipe Book</h1>
+                    <p>Your personal pantry-to-meal finder</p>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-auth-tab="login" type="button">Login</button>
+                    <button class="auth-tab" data-auth-tab="signup" type="button">Sign Up</button>
+                    <div class="auth-tab-indicator"></div>
+                </div>
+
+                <div class="auth-forms">
+                    <!-- Login Form -->
+                    <form class="auth-form active" id="loginForm" data-form="login">
+                        <div class="auth-field">
+                            <input type="text" id="loginUsername" required autocomplete="username" />
+                            <label for="loginUsername">Username</label>
+                            <div class="field-line"></div>
+                        </div>
+                        <div class="auth-field">
+                            <input type="password" id="loginPassword" required autocomplete="current-password" />
+                            <label for="loginPassword">Password</label>
+                            <div class="field-line"></div>
+                        </div>
+                        <div class="auth-error" id="loginError"></div>
+                        <button type="submit" class="btn auth-btn">
+                            <span>Login</span>
+                            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form class="auth-form" id="signupForm" data-form="signup">
+                        <div class="auth-field">
+                            <input type="text" id="signupUsername" required autocomplete="username" />
+                            <label for="signupUsername">Username</label>
+                            <div class="field-line"></div>
+                        </div>
+                        <div class="auth-field">
+                            <input type="password" id="signupPassword" required autocomplete="new-password" />
+                            <label for="signupPassword">Password</label>
+                            <div class="field-line"></div>
+                        </div>
+                        <div class="auth-field">
+                            <input type="password" id="signupConfirm" required autocomplete="new-password" />
+                            <label for="signupConfirm">Confirm Password</label>
+                            <div class="field-line"></div>
+                        </div>
+                        <div class="auth-error" id="signupError"></div>
+                        <button type="submit" class="btn auth-btn">
+                            <span>Create Account</span>
+                            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-footer">
+                    <p>All data stored locally in your browser</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN APP (Hidden until authenticated) ==================== -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="brand-text">
+                    <h1>Recipe Book</h1>
+                    <p>Pantry</p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <button class="btn ghost" id="btnHelp" type="button">
+                    <span class="label" style="color: black;">Help</span>
+                </button>
+                <button class="btn" id="btnAddRecipe" type="button">
+                    <span class="label" style="color: aliceblue;">Add Recipe</span>
+                </button>
+                <!-- User Menu -->
+                <div class="user-menu" id="userMenu">
+                    <button class="user-btn" id="userMenuBtn" type="button">
+                        <span class="user-avatar" id="userAvatar">U</span>
+                        <span class="user-name" id="userName">User</span>
+                        <svg class="user-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info">
+                            <span class="user-role" id="userRole">User</span>
+                        </div>
+                        <button class="dropdown-item" id="btnLogout" type="button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+                            </svg>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+        <main class="layout">
+            <!-- Left: Pantry -->
+            <section class="panel pantry-panel">
+                <div class="panel-head">
+                    <h2>Your Pantry</h2>
+                    <div class="mini">
+                        <button class="chip-btn" id="btnClearPantry" type="button">Clear</button>
+                        <button class="chip-btn" id="btnSavePantry" type="button">Save</button>
+                    </div>
+                </div>
+
+                <div class="pantry-input">
+                    <label class="sr-only" for="ingredientInput">Add ingredient</label>
+                    <div class="input-wrap">
+                        <span class="input-icon" aria-hidden="true">⌕</span>
+                        <input id="ingredientInput" autocomplete="off"
+                            placeholder="Type ingredient (e.g., chicken, rice, tomato)..." />
+                        <button class="btn small" id="btnAddIngredient" type="button">Add</button>
+                    </div>
+                    <div class="hint">
+                        Tip: Press <kbd>Enter</kbd> to add. Use suggestions for consistent matching.
+                    </div>
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+
+                <div class="chips" id="pantryChips" aria-live="polite"></div>
+
+                <div class="pantry-stats" id="pantryStats"></div>
+
+                <div class="divider"></div>
+
+                <div class="filters">
+                    <h3>Filters</h3>
+                    <div class="filter-row">
+                        <div class="select">
+                            <label for="categorySelect">Meal Category</label>
+                            <select id="categorySelect">
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+
+                        <div class="select">
+                            <label for="sortSelect">Sort</label>
+                            <select id="sortSelect">
+                                <option value="best">Best Match</option>
+                                <option value="missingAsc">Fewest Missing</option>
+                                <option value="timeAsc">Fastest</option>
+                                <option value="ratingDesc">Top Rated</option>
+                                <option value="az">A → Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <label class="toggle">
+                            <input type="checkbox" id="onlyCanMake" />
+                            <span class="track"></span>
+                            <span class="txt">Only show “Can make now”</span>
+                        </label>
+
+                        <label class="toggle">
+                            <input type="checkbox" id="onlyFavorites" />
+                            <span class="track"></span>
+                            <span class="txt">Favorites</span>
+                        </label>
+                    </div>
+
+                    <div class="search-row">
+                        <div class="input-wrap compact">
+                            <span class="input-icon" aria-hidden="true">⌕</span>
+                            <input id="searchInput" placeholder="Search recipes by name or ingredient..." />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Results -->
+            <section class="panel results-panel">
+                <div class="panel-head">
+                    <h2 id="resultsTitle">Matches</h2>
+                    <div class="mini">
+                        <span class="pill" id="resultCount">0</span>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="best" type="button">Best Matches</button>
+                    <button class="tab" data-tab="can" type="button">Can Make Now</button>
+                    <button class="tab" data-tab="missing" type="button">Missing 1–3</button>
+                </div>
+
+                <div class="cards" id="cards"></div>
+
+                <div class="empty" id="emptyState">
+                    <div class="empty-card">
+                        <div class="spark" aria-hidden="true">✦</div>
+                        <h3>No matches yet</h3>
+                        <p>Add a few ingredients to your pantry to see what you can cook.</p>
+                        <button class="btn" id="btnDemo" type="button">Load Demo Pantry</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Recipe Details Modal -->
+        <div class="modal" id="recipeModal" aria-hidden="true" role="dialog" aria-modal="true">
+            <div class="modal-backdrop" data-close="true"></div>
+            <div class="modal-card" role="document">
+                <div class="modal-head">
+                    <div>
+                        <h3 id="modalTitle">Recipe</h3>
+                        <p class="sub" id="modalMeta"></p>
+                    </div>
+                    <button class="icon-btn" data-close="true" aria-label="Close">✕</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-grid">
+                        <div class="block">
+                            <h4>Ingredients</h4>
+                            <div class="taglist" id="modalIngredients"></div>
+                        </div>
+
+                        <div class="block">
+                            <h4>What you have / missing</h4>
+                            <div class="split">
+                                <div>
+                                    <p class="label">Have</p>
+                                    <div class="taglist good" id="modalHave"></div>
+                                </div>
+                                <div>
+                                    <p class="label">Missing</p>
+                                    <div class="taglist warn" id="modalMissing"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block full">
+                            <h4>Steps</h4>
+                            <ol class="steps" id="modalSteps"></ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-foot">
+                    <button class="btn ghost" id="modalToggleFav" type="button">♡ Favorite</button>
+                    <button class="btn" id="modalAddMissingToPantry" type="button">Add missing to pantry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Recipe Modal -->
+        <div class="modal" id="addModal" aria-hidden="true" role="dialog" aria-modal="true">
+            <div class="modal-backdrop" data-close="true"></div>
+            <div class="modal-card wide" role="document">
+                <div class="modal-head">
+                    <div>
+                        <h3>Add Your Recipe</h3>
+                        <p class="sub">Saved locally (offline) in your browser.</p>
+                    </div>
+                    <button class="icon-btn" data-close="true" aria-label="Close">✕</button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="addForm" class="form">
+                        <div class="row">
+                            <div class="field">
+                                <label>Name</label>
+                                <input id="fName" required placeholder="e.g., Garlic Butter Pasta" />
+                            </div>
+                            <div class="field">
+                                <label>Category</label>
+                                <select id="fCategory">
+                                    <option>Breakfast</option>
+                                    <option>Lunch</option>
+                                    <option>Dinner</option>
+                                    <option>Snack</option>
+                                    <option>Dessert</option>
+                                    <option>Drink</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Cook time (minutes)</label>
+                                <input id="fTime" type="number" min="1" value="20" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="field">
+                                <label>Ingredients (comma separated)</label>
+                                <input id="fIngredients" required placeholder="pasta, garlic, butter, salt, pepper" />
+                                <p class="tiny">Use simple words for best matching (no brands).</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="field">
+                                <label>Steps (one per line)</label>
+                                <textarea id="fSteps" rows="7" required
+                                    placeholder="Boil pasta&#10;Melt butter + garlic&#10;Toss and season"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row end">
+                            <button class="btn ghost" type="button" data-close="true">Cancel</button>
+                            <button class="btn" type="submit">Save Recipe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div class="modal" id="helpModal" aria-hidden="true" role="dialog" aria-modal="true">
+            <div class="modal-backdrop" data-close="true"></div>
+            <div class="modal-card" role="document">
+                <div class="modal-head">
+                    <div>
+                        <h3>How it works</h3>
+                        <p class="sub">Matching is ingredient-based and works offline.</p>
+                    </div>
+                    <button class="icon-btn" data-close="true" aria-label="Close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="help">
+                        <p><b>1)</b> Add what you have in your pantry.</p>
+                        <p><b>2)</b> The app ranks recipes by overlap and shows what's missing.</p>
+                        <p><b>3)</b> Filter by category, search, and favorite recipes.</p>
+                        <p><b>4)</b> Add your own recipes—saved in your browser storage.</p>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn" data-close="true" type="button">Got it</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- (Admin Dashboard removed for grade 4) -->
+
+        <div class="toast" id="toast" aria-live="polite"></div>
+
+    </div><!-- End of app-container -->
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
